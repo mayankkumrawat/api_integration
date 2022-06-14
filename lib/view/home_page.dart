@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Post>? posts;
+  List<Datum?>? datums;
   var isLoaded = false;
 
   @override
@@ -23,8 +23,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   void getData() async {
-    posts = await RemoteService().getPost();
-    if (posts != null) {
+    datums = await RemoteService().getData();
+    if (datums != null) {
       setState(() {
         isLoaded = true;
       });
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
       body: Visibility(
         visible: isLoaded,
         child: ListView.builder(
-          itemCount: posts?.length,
+          itemCount: datums?.length,
           itemBuilder: ((context, index) {
             return Container(
               padding: EdgeInsets.all(16),
@@ -63,7 +63,7 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          posts![index].title,
+                          datums![index]!.title,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Text(
-                          posts![index].title,
+                          datums![index]!.title,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
