@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:api_integration/services/remote_services.dart';
+import 'package:api_integration/view/read_more.dart';
 import 'package:flutter/material.dart';
 
 import '../model/post.dart';
@@ -35,7 +38,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Posts"),
+        title: const Text(
+          "News",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
       body: Visibility(
@@ -47,21 +53,32 @@ class _HomePageState extends State<HomePage> {
               padding: EdgeInsets.all(16),
               child: Row(
                 children: [
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.grey[300],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 16,
-                  ),
+                  // Container(
+                  //   width: 60,
+                  //   height: 50,
+                  //   child: Image.network(datums![index]!.imageUrl!),
+                  //   decoration: BoxDecoration(
+                  //     borderRadius: BorderRadius.circular(12),
+                  //     color: Colors.grey[300],
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   width: 16,
+                  // ),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Container(
+                          // width: 60,
+                          alignment: AlignmentDirectional.center,
+                          height: 200,
+                          child: Image.network(datums![index]!.imageUrl!),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.grey[300],
+                          ),
+                        ),
                         Text(
                           datums![index]!.title,
                           maxLines: 2,
@@ -72,9 +89,29 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Text(
-                          datums![index]!.title,
-                          maxLines: 2,
+                          datums![index]!.content,
+                          maxLines: 4,
+                          style: TextStyle(
+                            fontSize: 24,
+                          ),
                           overflow: TextOverflow.ellipsis,
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ReadMore(index, datums),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Read More',
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
+                          ),
                         ),
                       ],
                     ),
