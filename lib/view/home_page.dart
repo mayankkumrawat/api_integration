@@ -1,8 +1,10 @@
 import 'dart:math';
 
+import 'package:api_integration/controller/homepage_controller.dart';
 import 'package:api_integration/services/remote_services.dart';
 import 'package:api_integration/view/read_more.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../model/post.dart';
 
@@ -14,25 +16,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Datum?>? datums;
-  var isLoaded = false;
+  final homePageController = Get.put(HomePageController());
 
   @override
   void initState() {
     super.initState();
 
     //fetch data from api
-    getData();
+    // getData();
   }
 
-  void getData() async {
-    datums = await RemoteService().getData();
-    if (datums != null) {
-      setState(() {
-        isLoaded = true;
-      });
-    }
-  }
+  // void getData() async {
+  //   datums = await RemoteService().getData();
+  //   if (datums != null) {
+  //     setState(() {
+  //       isLoaded = true;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -44,84 +45,76 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: true,
       ),
-      body: Visibility(
-        visible: isLoaded,
-        child: ListView.builder(
-          itemCount: datums?.length,
-          itemBuilder: ((context, index) {
-            return Container(
-              padding: EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  // Container(
-                  //   width: 60,
-                  //   height: 50,
-                  //   child: Image.network(datums![index]!.imageUrl!),
-                  //   decoration: BoxDecoration(
-                  //     borderRadius: BorderRadius.circular(12),
-                  //     color: Colors.grey[300],
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   width: 16,
-                  // ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          // width: 60,
-                          alignment: AlignmentDirectional.center,
-                          height: 200,
-                          child: Image.network(datums![index]!.imageUrl!),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.grey[300],
+      body: Obx(
+        () => Visibility(
+          visible: homePageController.isLoaded.value,
+          child: ListView.builder(
+            itemCount: homePageController.datums.value.length,
+            itemBuilder: ((context, index) {
+              return Container(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            // width: 60,
+                            alignment: AlignmentDirectional.center,
+                            height: 200,
+                            child: Image.network(homePageController
+                                .datums.value[index].imageUrl!),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.grey[300],
+                            ),
                           ),
-                        ),
-                        Text(
-                          datums![index]!.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          datums![index]!.content,
-                          maxLines: 4,
-                          style: TextStyle(
-                            fontSize: 24,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        FlatButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ReadMore(index, datums),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            'Read More',
+                          Text(
+                            homePageController.datums.value[index].title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
+                          Text(
+                            homePageController.datums.value[index].content,
+                            maxLines: 4,
+                            style: TextStyle(
+                              fontSize: 24,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          FlatButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ReadMore(
+                                      index, homePageController.datums.value),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Read More',
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          }),
+                  ],
+                ),
+              );
+            }),
+          ),
+          replacement: CircularProgressIndicator(),
         ),
-        replacement: CircularProgressIndicator(),
       ),
     );
   }
